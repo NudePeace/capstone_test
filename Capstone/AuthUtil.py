@@ -13,6 +13,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
@@ -78,8 +79,6 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 
 
 def require_role(allowed_roles: list):
-    """Dependency to check user role"""
-
     def role_checker(current_user: dict = Depends(get_current_user)):
         if current_user["role"] not in allowed_roles:
             raise HTTPException(

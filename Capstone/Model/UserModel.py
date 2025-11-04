@@ -16,9 +16,9 @@ class UserRegisterRequest(BaseModel):
     @validator('password')
     def validate_password(cls, v):
         if not any(char.isdigit() for char in v):
-            raise ValueError('Mật khẩu phải chứa ít nhất một chữ số')
+            raise ValueError('비밀번호에는 숫자가 포함되어야 합니다')
         if not any(char.isupper() for char in v):
-            raise ValueError('Mật khẩu phải chứa ít nhất một chữ hoa')
+            raise ValueError('비밀번호에는 대문자를 하나 이상 포함해야 합니다')
         return v
 
 class UserLoginRequest(BaseModel):
@@ -35,7 +35,6 @@ class UserInfoResponse(BaseModel):
     account_id: int
     username: str
     email: str
-    password: str
     role: str
     is_active: bool
 
