@@ -66,7 +66,7 @@ async def execute_query(query: str, *args: Any) -> int:
         return new_id if new_id is not None else 0
 
     except asyncpg.exceptions.UniqueViolationError:
-        raise ValueError("사용자 ID 또는 이메일이 이미 사용되었습니다.")
+        raise ValueError("이메일이 이미 사용되었습니다.")
     except Exception as e:
         print(f"쿼리 오류: {e}")
         raise
