@@ -1,3 +1,5 @@
+from typing import Optional
+
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -11,7 +13,7 @@ load_dotenv()
 # Security configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
@@ -21,15 +23,11 @@ def hash_password(password: str) -> str:
     password_safe = password.encode('utf8')[:72]
     return pwd_context.hash(password_safe)
 
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a password against its hash"""
     password_safe = plain_password.encode('utf8')[:72]
     return pwd_context.verify(password_safe, hashed_password)
 
-
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
-    """Create JWT access token"""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -42,7 +40,6 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
 
 
 def decode_token(token: str) -> dict:
-    """Decode and verify JWT token"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
@@ -78,8 +75,6 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 
 
 def require_role(allowed_roles: list):
-    """Dependency to check user role"""
-
     def role_checker(current_user: dict = Depends(get_current_user)):
         if current_user["role"] not in allowed_roles:
             raise HTTPException(

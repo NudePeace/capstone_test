@@ -1,4 +1,4 @@
-from .user import (
+from .UserModel import (
     UserRegisterRequest,
     UserLoginRequest,
     TokenResponse,
@@ -8,7 +8,7 @@ from .user import (
 )
 
 __all__ = [
-    # User models
+    # User Model
     "UserRegisterRequest",
     "UserLoginRequest",
     "TokenResponse",

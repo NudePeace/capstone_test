@@ -1,28 +1,28 @@
+import logging
+
 from pydantic import BaseModel, EmailStr, Field, validator
 from datetime import datetime, date
 from typing import Optional
 
+logger = logging.getLogger(__name__)
+
 # Request Models
 class UserRegisterRequest(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=60)
-    name: str = Field(..., min_length=1, max_length=100)
-    phone_number: Optional[str] = Field(None, max_length=20)
-    date_of_birth: Optional[date] = None
-    gender: Optional[str] = Field(None, max_length=10)
-    address: Optional[str] = Field(None, max_length=255)
 
     @validator('password')
     def validate_password(cls, v):
         if not any(char.isdigit() for char in v):
-            raise ValueError('Mật khẩu phải chứa ít nhất một chữ số')
+            logger.info("비밀번호에는 숫자가 포함되어야 합니")
+            raise ValueError('비밀번호에는 숫자가 포함되어야 합니다')
         if not any(char.isupper() for char in v):
-            raise ValueError('Mật khẩu phải chứa ít nhất một chữ hoa')
+            logger.info('비밀번호에는 대문자를 하나 이상 포함해야 합니다')
+            raise ValueError('비밀번호에는 대문자를 하나 이상 포함해야 합니다')
         return v
 
 class UserLoginRequest(BaseModel):
-    username: str
+    email: str
     password: str
 
 class TokenResponse(BaseModel):
@@ -35,7 +35,6 @@ class UserInfoResponse(BaseModel):
     account_id: int
     username: str
     email: str
-    password: str
     role: str
     is_active: bool
 
